@@ -1,7 +1,8 @@
 import TaskList from './components/TaskList.jsx';
 import './App.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import tasksData from './data/tasksData.js';
+import axios from 'axios';
 
 
 
@@ -17,6 +18,12 @@ const App = () => {
     }));
   };
 
+  const onRemoveTask = id => {
+    setTasks(tasks => {
+      return tasks.filter(task => task.id !== id);
+    });
+  };
+
 
 
   return (
@@ -29,6 +36,7 @@ const App = () => {
           <TaskList
             tasks={tasks}
             onCompleteTask={onCompleteTask}
+            onRemoveTask={onRemoveTask}
           />
         </div>
       </main>
