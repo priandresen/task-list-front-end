@@ -9,10 +9,22 @@ const kbaseURL = 'http://localhost:5000';
 
 
 const getAllTasksAPI = () => {
-  return axios
-    .get(`${kbaseURL}/tasks`)
-    .then((response) => response.data)
-    .catch((error) => console.error(error));
+  return axios.get(`${kbaseURL}/tasks`)
+    .then(response => response.data)
+    .catch(error => console.error(error));
+};
+
+const convertFromAPI = (apiTask) => {
+  const newTask = {
+    ...apiTask,
+    // goal: apiTask.goal ? apiTask.goal : 'Unknown',
+    // goalId: apiTask.goal_id ? apiTask.goal_id : null,
+    isComplete: apiTask.is_complete,
+  };
+
+  delete apiTask.is_complete;
+  // delete apiTask.goal_id;
+  return newTask;
 };
 
 const onCompleteTaskAPI = (id) => {
@@ -28,21 +40,12 @@ const onRemoveTaskAPI = (id) => {
 };
 
 
-const convertFromAPI = (apiTask) => {
-  return {
-    ...apiTask,
-    goal: apiTask.goal || 'Unknown',
-    goalId: apiTask.goal_id || null,
-    isComplete: apiTask.is_complete,
-  };
-};
-
 const App = () => {
   const [tasks, setTasks] = useState([]);
 
- 
   const getAllTasks = () => {
-    getAllTasksAPI().then((tasksFromAPI) => {
+    return getAllTasksAPI()
+    .then((tasksFromAPI) => {
       const newTasks = tasksFromAPI.map(convertFromAPI);
       setTasks(newTasks);
     });
