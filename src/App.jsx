@@ -5,26 +5,72 @@ import tasksData from './data/tasksData.js';
 import axios from 'axios';
 
 
+const kbaseURL = 'http://localhost:5000';
+
+
+const getAllTasksAPI = () => {
+  return axios
+    .get(`${kbaseURL}/tasks`)
+    .then((response) => response.data)
+    .catch((error) => console.error(error));
+};
+
+const onCompleteTaskAPI = (id) => {
+  return axios
+    .patch(`${kbaseURL}/tasks/${id}/mark_complete`)
+    .catch((error) => console.error(error));
+};
+
+const onRemoveTaskAPI = (id) => {
+  return axios
+    .delete(`${kbaseURL}/tasks/${id}`)
+    .catch((error) => console.error(error));
+};
+
+
+const convertFromAPI = (apiTask) => {
+  return {
+    ...apiTask,
+    goal: apiTask.goal || 'Unknown',
+    goalId: apiTask.goal_id || null,
+    isComplete: apiTask.is_complete,
+  };
+};
 
 const App = () => {
-  const [tasks, setTasks] = useState(tasksData);
+  const [tasks, setTasks] = useState([]);
 
-  const onCompleteTask = (id) => {
-    setTasks(tasks.map(task => {
-      if (task.id === id) {
-        return { ...task, isComplete: !task.isComplete};
-      }
-      return task;
-    }));
-  };
-
-  const onRemoveTask = id => {
-    setTasks(tasks => {
-      return tasks.filter(task => task.id !== id);
+ 
+  const getAllTasks = () => {
+    getAllTasksAPI().then((tasksFromAPI) => {
+      const newTasks = tasksFromAPI.map(convertFromAPI);
+      setTasks(newTasks);
     });
   };
 
+  useEffect(() => {
+    getAllTasks();
+  }, []);
 
+
+  const onCompleteTask = (id) => {
+    onCompleteTaskAPI(id).then(() => {
+      setTasks((tasks) =>
+        tasks.map((task) =>
+          task.id === id
+            ? { ...task, isComplete: !task.isComplete }
+            : task
+        )
+      );
+    });
+  };
+
+ 
+  const onRemoveTask = (id) => {
+    onRemoveTaskAPI(id).then(() => {
+      setTasks((tasks) => tasks.filter((task) => task.id !== id));
+    });
+  };
 
   return (
     <div className="App">
@@ -32,13 +78,11 @@ const App = () => {
         <h1>Ada&apos;s Task List</h1>
       </header>
       <main>
-        <div>
-          <TaskList
-            tasks={tasks}
-            onCompleteTask={onCompleteTask}
-            onRemoveTask={onRemoveTask}
-          />
-        </div>
+        <TaskList
+          tasks={tasks}
+          onCompleteTask={onCompleteTask}
+          onRemoveTask={onRemoveTask}
+        />
       </main>
     </div>
   );
