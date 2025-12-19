@@ -1,28 +1,52 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 
+const kDefaultsFormState = {
+	title: '',
+	description: '',
+	isComplete: '',
+}
+
 const NewTaskForm = ({ onHandleSubmit }) => {
-  const [name, setName] = useState('');
+
+  const [formData, setFormData] = useState(kDefaultsFormState);
 	
-	const handleNameChange = (event) => {
-		setName(event.target.value);
+	const handleChange = (event) => {
+		setFormData({...formData, [event.target.name]: event.target.value});
 	};
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		const newTask = {
-				title: name,
-				isComplete: false,
-				description: '',
-		}
-		onHandleSubmit(newTask);
-		setName('');
+		onHandleSubmit(formData);
+		setFormData(kDefaultsFormState);
     };
+
+	const makeControlledInput = (name) => {
+		return <input type="text" 
+		id={`-input-${name}`} 
+		name={name}
+		value={formData[name]}
+		onChange={handleChange}></input>
+	};
+
 
   return (
 	<form onSubmit={handleSubmit}>
-		<label htmlFor="name">Task Title: </label>
-		<input type="text" id="name" name="name" value={name} onChange={handleNameChange}/>
+		<div>
+			<label htmlFor="name">Task Title: </label>
+			{makeControlledInput('title')}
+		</div>
+		<div>
+			<label htmlFor="name">Task Description: </label>
+			{makeControlledInput('description')}
+		</div>
+		<div>
+			<label htmlFor="is-complete"> Is complete: </label>
+			<select name="isComplete" id="is-complete" onChange={handleChange} value={formData.isComplete}>
+			<option value="false">False</option>
+			<option value="true">True</option>
+			</select>
+		</div>
 		<div>
 			<input type="submit" value="Add a Task" />
 			</div>

@@ -92,17 +92,24 @@ const App = () => {
     });
   };
 
- 
+
   const onRemoveTask = (id) => {
     onRemoveTaskAPI(id).then(() => {
       setTasks((tasks) => tasks.filter((task) => task.id !== id));
     });
   };
 
+  const convertToAPI = (newTask) => {
+    return {
+      ...newTask,
+      isComplete: newTask.is_complete === 'true' ? true : false,
+    };
+  };
+
   const onHandleSubmit = (newTask) => {
-    return axios.post(`${kbaseURL}/tasks`, newTask)
+    return axios.post(`${kbaseURL}/tasks`, convertToAPI(newTask))
       .then((response) => {
-        setTasks((tasks) => [...tasks, convertFromAPI(response.data)]); 
+        setTasks((tasks) => [...tasks, convertFromAPI(response.data)]);
       })
       .catch((error) => console.error(error));
   };
@@ -113,12 +120,12 @@ const App = () => {
         <h1>Ada&apos;s Task List</h1>
       </header>
       <main>
-        <NewTaskForm onHandleSubmit={onHandleSubmit}/>
         <TaskList
           tasks={tasks}
           onCompleteTask={onCompleteChangeTask}
           onRemoveTask={onRemoveTask}
         />
+        <NewTaskForm onHandleSubmit={onHandleSubmit}/>
       </main>
     </div>
   );
