@@ -103,7 +103,7 @@ const App = () => {
     return {
       title: newTask.title,
       description: newTask.description,
-      completed_at: newTask.isComplete ? new Date().toJSON() : null,
+      completed_at: newTask.isComplete ? new Date() : null,
     };
   };
 
