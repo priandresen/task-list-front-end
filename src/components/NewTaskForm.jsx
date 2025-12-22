@@ -4,15 +4,19 @@ import PropTypes from 'prop-types';
 const kDefaultsFormState = {
 	title: '',
 	description: '',
-	isComplete: '',
+	isComplete: false,
 }
 
 const NewTaskForm = ({ onHandleSubmit }) => {
+	const [formData, setFormData] = useState(kDefaultsFormState);
 
-  const [formData, setFormData] = useState(kDefaultsFormState);
-	
 	const handleChange = (event) => {
-		setFormData({...formData, [event.target.name]: event.target.value});
+		const { name, value } = event.target;
+
+		setFormData({
+			...formData,
+			[name]: name === 'isComplete' ? value === 'true' ? true : false : value,
+		});
 	};
 
 	const handleSubmit = (event) => {
@@ -42,7 +46,7 @@ const NewTaskForm = ({ onHandleSubmit }) => {
 		</div>
 		<div>
 			<label htmlFor="is-complete"> Is complete: </label>
-			<select name="isComplete" id="is-complete" onChange={handleChange} value={formData.isComplete}>
+			<select name="isComplete" id="is-complete" onChange={handleChange} value={String(formData.isComplete)}>
 			<option value="false">False</option>
 			<option value="true">True</option>
 			</select>

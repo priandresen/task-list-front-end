@@ -101,14 +101,18 @@ const App = () => {
 
   const convertToAPI = (newTask) => {
     return {
-      ...newTask,
-      isComplete: newTask.is_complete === 'true' ? true : false,
+      title: newTask.title,
+      description: newTask.description,
+      completed_at: newTask.isComplete ? new Date().toJSON() : null,
     };
   };
 
   const onHandleSubmit = (newTask) => {
     return axios.post(`${kbaseURL}/tasks`, convertToAPI(newTask))
       .then((response) => {
+        // if (newTask.isComplete === true) {
+        //   onCompleteTaskAPI(response.data.id);
+        // }
         setTasks((tasks) => [...tasks, convertFromAPI(response.data)]);
       })
       .catch((error) => console.error(error));
