@@ -12,6 +12,7 @@ const NewTaskForm = ({ onHandleSubmit }) => {
 
 	const handleChange = (event) => {
 		const { name, value } = event.target;
+		console.log(name, value);
 
 		setFormData({
 			...formData,
@@ -45,8 +46,8 @@ const NewTaskForm = ({ onHandleSubmit }) => {
 			{makeControlledInput('description')}
 		</div>
 		<div>
-			<label htmlFor="is-complete"> Is complete: </label>
-			<select name="isComplete" id="is-complete" onChange={handleChange} value={String(formData.isComplete)}>
+			<label htmlFor="isComplete"> Is complete: </label>
+			<select name="isComplete" id="-input-is-complete" onChange={handleChange} value={String(formData.isComplete)}>
 			<option value="false">False</option>
 			<option value="true">True</option>
 			</select>
